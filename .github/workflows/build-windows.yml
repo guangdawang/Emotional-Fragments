@@ -2,9 +2,9 @@ name: Build Windows Executable
 
 on:
   push:
-    branches: [ "main", "master" ]
+    branches: ["main", "master"]
   pull_request:
-    branches: [ "main", "master" ]
+    branches: ["main", "master"]
   workflow_dispatch: # 允许你在网页上手动点击运行
 
 jobs:
@@ -21,7 +21,7 @@ jobs:
 
       # 2. 缓存 Library 文件夹，大幅加快二次构建速度
       - name: Cache Library
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: Library
           key: Library-Unity-Project
@@ -53,7 +53,7 @@ jobs:
 
       # 5. 上传构建产物
       - name: Upload Build Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Windows-EXE
           path: build
