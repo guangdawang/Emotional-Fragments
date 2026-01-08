@@ -31,10 +31,11 @@ jobs:
       # 3. 激活 Unity License (使用 Personal 版自动激活)
       - name: Activate Unity License
         uses: game-ci/unity-activate@v2
-        with:
+        env:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-          UNITY_VERSION: 2021.3.16f1
+        with:
+          unityVersion: 2021.3.16f1
 
       # 4. 执行构建 Windows 版本
       - name: Build Windows Project
