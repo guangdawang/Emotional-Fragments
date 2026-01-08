@@ -44,6 +44,7 @@ jobs:
           buildsPath: build # 构建产物存放的文件夹
           projectPath: .
           versioning: Semantic
+          version: 2021.3.16f1 # Unity 2021.3 LTS 版本
 
       # 5. 上传构建产物
       - name: Upload Build Artifact
