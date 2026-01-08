@@ -1,0 +1,59 @@
+name: Build Windows Executable
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+  workflow_dispatch: # 允许你在网页上手动点击运行
+
+jobs:
+  build:
+    name: Build for Windows
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 检出代码
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true # 开启LFS支持，防止大文件丢失
+
+      # 2. 缓存 Library 文件夹，大幅加快二次构建速度
+      - name: Cache Library
+        uses: actions/cache@v3
+        with:
+          path: Library
+          key: Library-Unity-Project
+          restore-keys: |
+            Library-Unity-
+
+      # 3. 激活 Unity License (使用 Personal 版自动激活)
+      - name: Activate Unity License
+        uses: game-ci/unity-activate@v2
+        env:
+          # 推荐把邮箱和密码存在 GitHub Secrets 里，不要明文写在这里
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+
+      # 4. 执行构建 Windows 版本
+      - name: Build Windows Project
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          targetPlatform: StandaloneWindows64
+          buildName: 情绪碎片 # 打包出来的文件夹名字
+          buildsPath: build # 构建产物存放的文件夹
+          projectPath: .
+          versioning: Semantic
+
+      # 5. 上传构建产物
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Windows-EXE
+          path: build
